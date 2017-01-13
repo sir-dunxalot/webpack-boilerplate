@@ -23,11 +23,11 @@ var options = {
   module: {
     loaders: [{
       test: /\.js$/,
-      exclude: /(node_modules)/,
-      loader: 'babel-loader',
-      query: {
-        presets: ['es2015']
-      },
+      exclude: /node_modules/,
+      loaders: [
+        'babel-loader?presets[]=es2015',
+        'eslint-loader',
+      ],
     }, {
       test: /\.html$/,
       loader: 'html-loader',
@@ -64,6 +64,11 @@ var options = {
     new webpack.LoaderOptionsPlugin({
       options: {
         context: __dirname,
+        eslint: {
+          configFile: './.eslintrc.js',
+          failOnError: true,
+          failOnWarning: false,
+        },
         postcss: [
           autoprefixer
         ],
