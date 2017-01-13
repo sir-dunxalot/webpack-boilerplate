@@ -1,0 +1,5 @@
+(function() {
+
+  /* App runs here */
+
+}());
