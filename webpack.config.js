@@ -4,19 +4,26 @@ const FaviconsWebpackPlugin = require('favicons-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const productionUrl = 'http://domain.com/'; // Change
+const distDirName = 'dist';
+const sourceDirName = 'app';
 
 const NODE_ENV = process.env.NODE_ENV;
 const isInProduction = NODE_ENV === 'production';
 
 const autoprefixer = require('autoprefixer');
 const path = require('path');
-const distPath = path.join(__dirname, 'dist');
+const distPath = path.join(__dirname, distDirName);
+const SourcePath = path.join(__dirname, sourceDirName);
 const webpack = require('webpack');
 const webpageValidator = require('webpack-validator');
 
+function sourceFile(fileName) {
+  return `${SourcePath}/${fileName}`;
+}
+
 const options = {
   entry: {
-    app: path.join(__dirname, 'app/index.js'),
+    app: sourceFile('index.js'),
   },
   output: {
     filename: 'app.js',
@@ -59,10 +66,10 @@ const options = {
   plugins: [
     new HtmlWebpackPlugin({
       title: 'Jebbit deployment module',
-      template: 'app/index.html',
+      template: `${sourceDirName}/index.html`,
     }),
     new FaviconsWebpackPlugin({
-      logo: path.join(__dirname, 'app/images/favicon.png'),
+      logo: sourceFile('images/favicon.png'),
     }),
     new webpack.HotModuleReplacementPlugin({
       multiStep: false
