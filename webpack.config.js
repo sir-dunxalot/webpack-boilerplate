@@ -1,23 +1,27 @@
-var CleanWebpackPlugin = require('clean-webpack-plugin');
-var CompressionPlugin = require('compression-webpack-plugin');
-var HtmlWebpackPlugin = require('html-webpack-plugin');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
+const CompressionPlugin = require('compression-webpack-plugin');
+const FaviconsWebpackPlugin = require('favicons-webpack-plugin')
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+
+const productionUrl = 'http://domain.com/'; // Change
 
 const NODE_ENV = process.env.NODE_ENV;
 const isInProduction = NODE_ENV === 'production';
 
-var autoprefixer = require('autoprefixer');
-var path = require('path');
-var distPath = path.join(__dirname, 'dist');
-var webpack = require('webpack');
-var webpageValidator = require('webpack-validator');
+const autoprefixer = require('autoprefixer');
+const path = require('path');
+const distPath = path.join(__dirname, 'dist');
+const webpack = require('webpack');
+const webpageValidator = require('webpack-validator');
 
-var options = {
+const options = {
   entry: {
     app: path.join(__dirname, 'app/index.js'),
   },
   output: {
     filename: 'app.js',
     path: distPath,
+    publicPath: isInProduction ? productionUrl : 'http://0.0.0.0:8080/',
   },
 
   module: {
@@ -38,9 +42,16 @@ var options = {
       test: /\.scss$/,
       loaders: [
         'style-loader',
-        'css-loader?importLoaders=1',
+        'css-loader?importLoaders=1&sourceMap',
         'postcss-loader',
-        'sass-loader',
+        'resolve-url-loader',
+        'sass-loader?sourceMap',
+      ]
+    }, {
+      test: /\.(jpe?g|png|gif|svg)$/i,
+      loaders: [
+        'file-loader?name=./images/[name].[ext]',
+        'image-webpack-loader'
       ]
     }],
   },
@@ -49,6 +60,9 @@ var options = {
     new HtmlWebpackPlugin({
       title: 'Jebbit deployment module',
       template: 'app/index.html',
+    }),
+    new FaviconsWebpackPlugin({
+      logo: path.join(__dirname, 'app/images/favicon.png'),
     }),
     new webpack.HotModuleReplacementPlugin({
       multiStep: false
@@ -78,6 +92,9 @@ var options = {
             path.resolve(__dirname, './node_modules/compass-boilerplate/lib'),
           ],
         },
+        output: {
+          path: distPath,
+        }
       },
     }),
     new webpack.DefinePlugin({
