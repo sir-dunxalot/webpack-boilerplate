@@ -70,7 +70,7 @@ const options = {
   plugins: [
     new HtmlWebpackPlugin({
       title: 'Jebbit deployment module',
-      template: `${sourceDirName}/index.html`,
+      template: `${publicPath}/index.html`,
     }),
     new FaviconsWebpackPlugin({
       logo: `${publicPath}/images/favicon.png`,
